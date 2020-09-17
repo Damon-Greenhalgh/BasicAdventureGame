@@ -37,7 +37,7 @@ class Barbarian(Player):
         # Class Specific Stat
         # Rage Builds up when the player takes damage, or after a turn.
         # Rage is the resource cost for the Barbarian's abilities.
-        self.class_stat_name = "RAGE"
+        self.class_stat_name = "Rage"
         self.mp = 0     # Start at 0 rage.
 
         # Class Specific Descriptions
@@ -73,7 +73,7 @@ class Ranger(Player):
     
         # Class Specific Stat
         # The ranger uses ARROWS as a resource.
-        self.class_stat_name = "ARROWS"
+        self.class_stat_name = "Arrows"
 
 class Wizard(Player):
     
@@ -84,5 +84,5 @@ class Wizard(Player):
         
         # Class Specific Stat
         # The wizard uses MANA as a resource.
-        self.class_stat_name = "MANA"
+        self.class_stat_name = "Mana"
 

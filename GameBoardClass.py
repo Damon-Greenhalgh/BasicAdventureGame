@@ -58,7 +58,13 @@ class GameBoard:
         """
         #Systems
         player = None
-        name = input("Name of Adventurer: ").upper()
+        name = input("Type in your Adventurer's Name, or type 'Random' for a random name.\nName of Adventurer: ")
+        if name == "Random":
+            print("check")
+            self.pause()
+            random_names = ["Vex'ahlia", "Grog Strongjaw", "Jester Lavorre", "Vax'ildan", "Keyleth"]
+            idx = random.randrange(len(random_names))
+            name = random_names[idx]
         self.clear()    # Clear Terminal
         player_class = int(input("(Barbarian - 1, Ranger - 2, Wizard - 3)\nChoose your Class: "))
         self.clear()    # Clear Terminal
@@ -128,10 +134,10 @@ class GameBoard:
                     combat = False    # End Combat
 
             elif action == 2:    # Skills Action
-                pass
+                self.in_development()
 
             elif action == 3:    # Check Inventory
-                pass
+                self.in_development()
 
             elif action == 4:    # Flee Action
                 print(f"{player.name} flees!")
@@ -145,7 +151,10 @@ class GameBoard:
          - param: obj player
          - return: None
         """
-        print(f"{player.name}'S STATS\nLVL {player.level}: ({player.xp} / {player.max_xp})\nHP: ({player.hp} / {player.max_hp})\n{player.class_stat_name}: ({player.mp} / {player.max_mp})\nGOLD: {player.gold}\nSTR: {player.str} DEX: {player.dex} INT: {player.int}")
+        print(f"{player.name}'s Stats\nClass: {player.player_class}\nLevel {player.level}: ({player.xp} / {player.max_xp})\nHealth: ({player.hp} / {player.max_hp})\n{player.class_stat_name}: ({player.mp} / {player.max_mp})\nGold: {player.gold}\n(STR: {player.str} DEX: {player.dex} INT: {player.int})")
+
+    def in_development(self):
+        print("Feature is currently in development!")
 
     def pause(self):
         """
@@ -235,7 +244,7 @@ class GameBoard:
                 self.stats(player)
 
             elif action == 3:    # View Shop
-                pass
+                self.in_development()
 
             elif action == 4:    # Exit game
                 game = False
