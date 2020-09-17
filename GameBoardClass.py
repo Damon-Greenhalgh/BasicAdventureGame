@@ -49,35 +49,33 @@ class GameBoard:
 
         # System Element/s
         self.main()
-
+    
     def create_player(self):
         """
         This function creates the player object.
          - param: None
-         - return: obj player
+         - return: None
         """
         #Systems
-        player = None
+        self.player = None
         name = input("Type in your Adventurer's Name, or type 'Random' for a random name.\nName of Adventurer: ")
         if name == "Random":
-            print("check")
-            self.pause()
             random_names = ["Vex'ahlia", "Grog Strongjaw", "Jester Lavorre", "Vax'ildan", "Keyleth"]
             idx = random.randrange(len(random_names))
             name = random_names[idx]
+
         self.clear()    # Clear Terminal
-        player_class = int(input("(Barbarian - 1, Ranger - 2, Wizard - 3)\nChoose your Class: "))
-        self.clear()    # Clear Terminal
+        self.pause()    # Pause
+
+        idx = int(input("(Barbarian - 1, Ranger - 2, Wizard - 3)\nChoose your Class: "))
 
         # Determine Player Class
-        if player_class == 1:
-            player = Barbarian(name)
-        elif player_class == 2:
-            player = Ranger(name)
-        elif player_class == 3:
-            player = Wizard(name)
+        idx -= 1
+        player_classes = [Barbarian(name), Ranger(name), Wizard(name)]
+        self.player = player_classes[idx]
 
-        return player
+        self.clear()    # Clear Terminal
+        self.pause()    # Pause
 
     def create_enemy(self):
         """
@@ -90,68 +88,76 @@ class GameBoard:
         enemy = list_of_enemies[idx]
         return enemy
 
-    def combat(self, player, enemy):
+    def combat(self, enemy):
         """
         This function handles all combat systems and calls/
-         - param: obj player
          - param: obj enemy
          - return: None
         """
         print(f"A wild {enemy.name} has appeared!")
         self.pause()    # Delay
         combat = True
-
+        
         while combat:
-            action = int(input(f"{player.name} HP: ({player.hp} / {player.max_hp}) - {enemy.name} HP: ({enemy.hp} / {enemy.max_hp})\n\n(Attack - 1, Skills - 2 (DEV), Inventory - 3 (DEV), Flee - 4)\nAction: "))
-            self.clear()
-            
-            if action == 1:    # Attack Action
-                try:
-                    entity = sorted([player, enemy], key = lambda x : -x.dex)    # Highest dex.
-                    a, b = 0, 1
+            action = int(input(f"{self.player.name} HP: ({self.player.hp} / {self.player.max_hp}) - {enemy.name} HP: ({enemy.hp} / {enemy.max_hp})\n\n(Attack - 1, Skills - 2 (DEV), Inventory - 3 (DEV), Flee - 4)\nAction: "))
+            self.pause()    # Pause
+            self.clear()    # Clear
 
-                    for i in range(2):
-                        damage = entity[a].attack()
-                        entity[b].edit_hp(-damage)
+            try:
+                # Players Turn
+                if action == 1:    # Basic Attack Action
+                    damage = self.player.attack()
+                    damage = enemy.edit_status(damage)
+                    enemy.edit_hp(-damage)
 
-                        # Check if entity[b] has died.
-                        if entity[b].hp == 0:
-                            raise EntityDeathError
+                    # Check if enemy has been slain.
+                    if enemy.hp == 0:
+                        raise EntityDeathError
 
-                        a, b = b, a    # Swap
+                elif action == 2:    # Skills Action
+                    skill = int(input(f"{self.player.name}'s Skills:\n({self.player.skills[0]} - 1, {self.player.skills[1]} - 2, {self.player.skills[2]} - 3)\nAction: "))
+                    self.player.skill_rage()
 
-                except EntityDeathError:
-                    if player.hp == 0:    # Player has been slain.
-                        print(f"{player.name} has been slain!")
-                        self.pause()    # Delay
+                elif action == 3:    # Check Inventory
+                    self.in_development()
 
-                    elif enemy.hp == 0:    # Player slays the enemy.
-                        print(f"{player.name} has slain the {enemy.name}!\n{player.name} gained {enemy.max_hp} XP and {enemy.max_hp // 4} GOLD!")
-                        self.pause()    # Delay
-                        player.edit_xp(enemy.max_hp)    # Player gains XP
-                        player.edit_gold(enemy.max_hp // 4)    # Player gains GOLD
+                elif action == 4:    # Flee Action
+                    roll = self.die.roll()
+                    if roll > self.flee_condition:    # If the player is able to flee, the chance to flee is reduced
+                        print(f"{self.player.name} flees!")
+                        self.flee_condition = min(self.flee_condition + 1, 20)
+                        combat = False
+                        break    # End combat
+                    else:
+                        print(f"{self.player.name} was unable to flee?!")
 
-                    combat = False    # End Combat
+                # Enemy Turn
+                damage = enemy.attack()
+                damage = self.player.edit_status(damage)
+                self.player.edit_hp(-damage)
 
-            elif action == 2:    # Skills Action
-                self.in_development()
+            except EntityDeathError:    # Either the player or the enemy has been slain
+                if self.player.hp == 0:    # Player has been slain.
+                    print(f"{self.player.name} has been slain!")
+                    self.pause()    # Delay
 
-            elif action == 3:    # Check Inventory
-                self.in_development()
+                elif enemy.hp == 0:    # self.player slays the enemy.
+                    print(f"{self.player.name} has slain the {enemy.name}!\n{self.player.name} gained {enemy.max_hp} XP and {enemy.max_hp // 4} GOLD!")
+                    self.pause()    # Delay
+                    self.player.edit_xp(enemy.max_hp)    # Player gains XP
+                    self.player.edit_gold(enemy.max_hp // 4)    # Player gains GOLD
 
-            elif action == 4:    # Flee Action
-                print(f"{player.name} flees!")
-                combat = False
-            
+                combat = False    # End Combat
+
             self.pause()
 
-    def stats(self, player):
+    def stats(self):
         """
-        This function displays the player's current stats.
-         - param: obj player
+        This function displays the players current stats.
+         - param: None
          - return: None
         """
-        print(f"{player.name}'s Stats\nClass: {player.player_class}\nLevel {player.level}: ({player.xp} / {player.max_xp})\nHealth: ({player.hp} / {player.max_hp})\n{player.class_stat_name}: ({player.mp} / {player.max_mp})\nGold: {player.gold}\n(STR: {player.str} DEX: {player.dex} INT: {player.int})")
+        print(f"{self.player.name}'s Stats\nClass: {self.player.player_class}\nLevel {self.player.level}: ({self.player.xp} / {self.player.max_xp})\nHealth: ({self.player.hp} / {self.player.max_hp})\n{self.player.class_stat_name}: ({self.player.mp} / {self.player.max_mp})\nGold: {self.player.gold}\n(STR: {self.player.str} DEX: {self.player.dex} INT: {self.player.int})")
 
     def in_development(self):
         print("Feature is currently in development!")
@@ -195,7 +201,9 @@ class GameBoard:
         # self.entry.pack(side = gui.LEFT, pady = self.pad)
 
         # Systems
-        player = self.create_player()
+        self.die = Die()
+        self.flee_condition = 10
+        self.create_player()
         game = True
 
         # GUI
@@ -205,7 +213,7 @@ class GameBoard:
 
         # self.lbl_name = gui.Label(
         #     master = self.info_frame, 
-        #     text = f" {player.name} \n The {player.player_class} ",
+        #     text = f" {self.player.name} \n The {self.player.self.player_class} ",
         #     font = (None, 17),
         #     justify = gui.LEFT,
         #     relief = gui.GROOVE,
@@ -216,7 +224,7 @@ class GameBoard:
         
         # self.lbl_stats = gui.Label(
         #     master = self.info_frame,
-        #     text = f"LVL {player.level} - {player.xp}/{player.max_xp}\nHP - {player.hp}/{player.max_hp}\nMP - {player.mp}/{player.max_mp}\nGOLD - {player.gold}\nSTR - {player.str}\nDEX - {player.dex}\nINT - {player.int}", 
+        #     text = f"LVL {self.player.level} - {self.player.xp}/{self.player.max_xp}\nHP - {self.player.hp}/{self.player.max_hp}\nMP - {self.player.mp}/{self.player.max_mp}\nGOLD - {self.player.gold}\nSTR - {self.player.str}\nDEX - {self.player.dex}\nINT - {self.player.int}", 
         #     font = (None, 12),
         #     justify = gui.LEFT, 
         #     borderwidth = 5,
@@ -228,7 +236,7 @@ class GameBoard:
         # self.lbl_name.pack()
         # self.lbl_stats.pack()
 
-        self.stats(player)
+        self.stats()
 
         while game:
 
@@ -238,10 +246,10 @@ class GameBoard:
 
             if action == 1:    # Battle
                 enemy = self.create_enemy()
-                self.combat(player, enemy)
+                self.combat(enemy)
 
             elif action == 2:    # View Stats
-                self.stats(player)
+                self.stats()
 
             elif action == 3:    # View Shop
                 self.in_development()

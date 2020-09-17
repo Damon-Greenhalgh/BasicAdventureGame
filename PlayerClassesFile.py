@@ -33,6 +33,7 @@ class Barbarian(Player):
         stats = [name, 15, 10, 5, 6, 3, 1]
         Player.__init__(self, stats)
         self.player_class = "Barbarian"
+        self.skills = ["Rage", "Brutal Critcal", "Primal Champion"]
 
         # Class Specific Stat
         # Rage Builds up when the player takes damage, or after a turn.
@@ -54,7 +55,10 @@ class Barbarian(Player):
 
     def skill_rage(self):
         # Halves incoming damage and increases base damage.
-        pass
+        print("?????")
+        self.status += [["*", 1/2, f"{self.name} takes half damage.(Rage)"] for i in range(5)]     # Reduces damage
+        print(f"{self.name} casts Rage!")
+        
 
     def skill_brutal_critical(self):
         # When the player critically strikes, deal bonus damage.

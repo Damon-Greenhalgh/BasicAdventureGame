@@ -12,17 +12,20 @@ Author: Damon Greenhalgh
 """
 
 # Import/s
+import math
 from DieClass import Die
 
 class Entity:
 
     def __init__(self, stats = ["Entity", 10, 10, 10]):
-        self.name = stats[0]
+        self.name = stats[0]    # Name
 
         # Stats
         self.str = stats[1]
         self.dex = stats[2]
         self.int = stats[3]
+     
+        self.status = []    # Status Array
 
         # Determine the entity's highest statistic.
         stats = stats[1 : ]
@@ -32,6 +35,9 @@ class Entity:
         # Calculate Health
         self.hp = (self.str * 10)     
         self.max_hp = self.hp
+
+        # Calculate Armor
+        self.armor = min((self.dex // 2), 15)
 
     def attack(self):    # Basic attack.
         """
@@ -76,3 +82,24 @@ class Entity:
             self.hp = self.max_hp
         else:
             self.hp = new_hp
+        
+    def edit_status(self, damage):
+        """
+        This function handles statuses the entity has.
+         - param: int damage
+         - return: int damage
+        """
+        if not self.status == []:    # Check there exist status
+            operator = self.status[0][0]    # Determine the operation
+            if operator == "*":
+                damage = damage * self.status[0][1]    # Edit damage value
+            elif operator == "+":
+                damage = damage + self.status[0][1] 
+
+            # Display
+            print(self.status[0][2])
+            
+            damage = math.ceil(damage)
+            self.status.pop(0)    # Remove status
+
+        return damage
