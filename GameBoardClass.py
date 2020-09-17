@@ -36,16 +36,16 @@ class GameBoard:
 
     def __init__(self):
         # GUI Element/s
-        self.window = gui.Tk()
-        self.window.title("Adventure Game")    # Title
+        # self.window = gui.Tk()
+        # self.window.title("Adventure Game")    # Title
 
-        self.width = 650    # Width
-        self.height = 450    # Height
-        self.pad = 20    # Padding
+        # self.width = 650    # Width
+        # self.height = 450    # Height
+        # self.pad = 20    # Padding
 
-        self.window.geometry(f"{self.width}x{self.height}")    # Initial size of window
-        self.window.minsize(self.width, self.height)
-        self.window.resizable(0, 0)    # Don't allow for resizing
+        # self.window.geometry(f"{self.width}x{self.height}")    # Initial size of window
+        # self.window.minsize(self.width, self.height)
+        # self.window.resizable(0, 0)    # Don't allow for resizing
 
         # System Element/s
         self.main()
@@ -96,7 +96,7 @@ class GameBoard:
         combat = True
 
         while combat:
-            action = int(input(f"{player.name} HP: ({player.hp} / {player.max_hp}) - {enemy.name} HP: ({enemy.hp} / {enemy.max_hp})\n(Attack - 1, Skills - 2 (DEV), Inventory - 3 (DEV), Flee - 4)\nAction: "))
+            action = int(input(f"{player.name} HP: ({player.hp} / {player.max_hp}) - {enemy.name} HP: ({enemy.hp} / {enemy.max_hp})\n\n(Attack - 1, Skills - 2 (DEV), Inventory - 3 (DEV), Flee - 4)\nAction: "))
             self.clear()
             
             if action == 1:    # Attack Action
@@ -159,8 +159,7 @@ class GameBoard:
          - param: None
          - return: None
         """
-        time.sleep(0.5)
-        os.system("cls")
+        os.system("cls" if os.name == "nt" else "clear")
 
     def main(self):
         """
@@ -220,9 +219,12 @@ class GameBoard:
         # self.lbl_name.pack()
         # self.lbl_stats.pack()
 
+        self.stats(player)
+
         while game:
 
-            action = int(input("(Battle - 1, View Stats - 2, View Shop - 3 (DEV),  Exit - 4)\nAction: "))
+            action = int(input("\n(Battle - 1, View Stats - 2, View Shop - 3 (DEV),  Exit - 4)\nAction: "))
+            self.pause()
             self.clear()
 
             if action == 1:    # Battle
@@ -238,6 +240,6 @@ class GameBoard:
             elif action == 4:    # Exit game
                 game = False
         
-        self.window.mainloop()
+        # self.window.mainloop()
 
 game = GameBoard()

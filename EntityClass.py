@@ -60,7 +60,7 @@ class Entity:
 
         # Display
         disp_str = ["Fumble! ", "Critical Hit! ", ""]
-        print(f"{self.name} rolled {roll}!\n{disp_str[idx]}{self.name} deals {damage} damage!")
+        print(f"{self.name} rolled a {roll}!\n{disp_str[idx]}{self.name} deals {damage} damage!")
         return damage
 
     def edit_hp(self, value):
