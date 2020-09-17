@@ -18,6 +18,11 @@ from EntityClass import Entity
 
 # List of enemies.
 # Wolf, Goblin, Giant Spider, Owlbear, Beholder, Green Dragon
+class Mouse(Entity):
+    def __init__(self):
+        stats = ["Mouse", 1, 3, 1]    # 5 Total
+        Entity.__init__(self, stats)
+
 class Wolf(Entity):
     def __init__(self):
         stats = ["Wolf", 2, 10, 3]    # 15 Total
@@ -48,3 +53,7 @@ class Green_Dragon(Entity):
         stats = ["Green Dragon", 45, 20, 25]    # 90 Total
         Entity.__init__(self, stats)
 
+class Astral_Drednaught(Entity):
+    def __init__(self):
+        stats = ["Astral Drednaught", 65, 10, 45]    # 120 Total
+        Entity.__init__(self, stats)
