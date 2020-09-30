@@ -33,7 +33,7 @@ class Barbarian(Player):
         stats = [name, 15, 10, 5, 6, 3, 1]
         Player.__init__(self, stats)
         self.player_class = "Barbarian"
-        self.skills = ["Rage", "Brutal Critcal", "Primal Champion"]
+        self.skills = [("Rage", self.skill_rage), ("Brutal Critical", self.skill_brutal_critical), ("Primal Champion", self.skill_primal_champion)]
 
         # Class Specific Stat
         # Rage Builds up when the player takes damage, or after a turn.
@@ -41,32 +41,19 @@ class Barbarian(Player):
         self.class_stat_name = "Rage"
         self.mp = 0     # Start at 0 rage.
 
-        # Class Specific Descriptions
-        # Collection of descriptions during combat
-        self.attack_strings = {" slams their hammer into ", " cleaves ", "charges the "}
-    
-    def passive(self):
-        # Passive abilities
-        self.mp += 1
-
-    def refresh(self):
-        # Refresh all resources.
-        self.mp = 0
-
-    def skill_rage(self):
-        # Halves incoming damage and increases base damage.
-        print("?????")
-        self.status += [["*", 1/2, f"{self.name} takes half damage.(Rage)"] for i in range(5)]     # Reduces damage
-        print(f"{self.name} casts Rage!")
+    def skill_rage(self):    # Halves incoming damage.
+        if self.buff == []:
+            self.buff += [["*", 1/2, f"{self.name} takes half damage.(Rage)"] for i in range(5)]     # Reduces damage
+        else:
+            print("Cannot cast 'Rage' while under another buff effect.")
         
-
-    def skill_brutal_critical(self):
-        # When the player critically strikes, deal bonus damage.
+    def skill_brutal_critical(self):    # When the player critically strikes, deal bonus damage.
         pass
 
     def skill_primal_champion(self):
         # Double Strength, roll advantage.
-        pass
+        print("primal champion")
+
 
 class Ranger(Player):
 

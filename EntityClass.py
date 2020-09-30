@@ -25,7 +25,9 @@ class Entity:
         self.dex = stats[2]
         self.int = stats[3]
      
-        self.status = []    # Status Array
+        # Status Array
+        self.buff = []    
+        self.debuff = []
 
         # Determine the entity's highest statistic.
         stats = stats[1 : ]
@@ -60,13 +62,13 @@ class Entity:
             damage = 0 
             idx = 0
 
-        elif (20 - self.dex // 3) <= roll <= 20:    # Critical hit
+        elif roll == 20:    # Critical hit
             damage = damage * 2
             idx = 1
 
         # Display
         disp_str = ["Fumble! ", "Critical Hit! ", ""]
-        print(f"{self.name} rolled a {roll}!\n{disp_str[idx]}{self.name} deals {damage} damage!")
+        print(f"{disp_str[idx]}{self.name} deals {damage} damage!(rolled a {roll})")
         return damage
 
     def edit_hp(self, value):
@@ -86,20 +88,23 @@ class Entity:
     def edit_status(self, damage):
         """
         This function handles statuses the entity has.
+         - param: str type
          - param: int damage
          - return: int damage
         """
-        if not self.status == []:    # Check there exist status
-            operator = self.status[0][0]    # Determine the operation
+
+        if not self.buff == []:    # Check there exist buff
+            operator = self.buff[0][0]    # Determine the operation
             if operator == "*":
-                damage = damage * self.status[0][1]    # Edit damage value
+                damage = damage * self.buff[0][1]    # Edit damage value
             elif operator == "+":
-                damage = damage + self.status[0][1] 
+                damage = damage + self.buff[0][1] 
 
             # Display
-            print(self.status[0][2])
+            print(self.buff[0][2])
             
             damage = math.ceil(damage)
-            self.status.pop(0)    # Remove status
+            self.buff.pop(0)    # Remove buff
+
 
         return damage
