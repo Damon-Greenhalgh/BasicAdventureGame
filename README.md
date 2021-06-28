@@ -1,5 +1,5 @@
 # BasicAdventureGame
-A basic adventure game by Damon Greenhalgh. [(Twitter)](https://twitter.com/DamonGArt)
+A basic adventure game by Damon Greenhalgh. 
  
  ---
 ## Changelog
